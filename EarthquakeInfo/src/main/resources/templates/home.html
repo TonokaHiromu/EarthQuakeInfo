@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地震情報サイト</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>地震情報サイト</h1>
+    </header>
+    <main>
+        <section class="current-earthquake">
+            <h2>直近の地震情報</h2>
+            <div class="earthquake-container">
+                <div class="earthquake-info">
+                    <p><strong>発生時刻:</strong> [[${quakeTime}]]</p>
+                    <p><strong>発生地点:</strong>[[${quakePointName}]]</p>
+                    <p><strong>最大震度:</strong> [[${maxScale}]]</p>
+                    <p><strong>マグニチュード:</strong> [[${magnitude}]]</p>
+                    <p><strong>震源の深さ:</strong> 約[[${quakePointDepth}]]km</p>
+                    <p><strong>津波の有無:</strong> [[${tsunami}]]</p>
+                </div>
+                <div class="earthquake-map">
+                    <iframe
+                        th:src="${mapURL}"
+                        width="400"
+                        height="300"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                    ></iframe>
+                </div>
+            </div>
+        </section>
+        <section class="past-earthquakes">
+            <h2>過去の地震情報</h2>
+            <div class="scroll-frame">
+                <ul>
+                    <li><strong>時間:</strong>[[${past2quakeTime}]] /<strong>発生地点:</strong>[[${past2quakePointName}]] /<strong>最大震度:</strong>[[${past2maxScale}]] /<strong>マグニチュード:</strong>[[${past2magnitude}]]</li>
+                    <li><strong>時間:</strong>[[${past3quakeTime}]] /<strong>発生地点:</strong>[[${past3quakePointName}]] /<strong>最大震度:</strong>[[${past3maxScale}]] /<strong>マグニチュード:</strong>[[${past3magnitude}]]</li>
+                    <li><strong>時間:</strong>[[${past4quakeTime}]] /<strong>発生地点:</strong>[[${past4quakePointName}]] /<strong>最大震度:</strong>[[${past4maxScale}]] /<strong>マグニチュード:</strong>[[${past4magnitude}]]</li>
+                    <li><strong>時間:</strong>[[${past5quakeTime}]] /<strong>発生地点:</strong>[[${past5quakePointName}]] /<strong>最大震度:</strong>[[${past5maxScale}]] /<strong>マグニチュード:</strong>[[${past5magnitude}]]</li>
+                    <li><strong>時間:</strong>[[${past6quakeTime}]] /<strong>発生地点:</strong>[[${past6quakePointName}]] /<strong>最大震度:</strong>[[${past6maxScale}]] /<strong>マグニチュード:</strong>[[${past6magnitude}]]</li>
+                    <li><strong>時間:</strong>[[${past7quakeTime}]] /<strong>発生地点:</strong>[[${past7quakePointName}]] /<strong>最大震度:</strong>[[${past7maxScale}]] /<strong>マグニチュード:</strong>[[${past7magnitude}]]</li>
+                    <li><strong>時間:</strong>[[${past8quakeTime}]] /<strong>発生地点:</strong>[[${past8quakePointName}]] /<strong>最大震度:</strong>[[${past8maxScale}]] /<strong>マグニチュード:</strong>[[${past8magnitude}]]</li>
+                    <li><strong>時間:</strong>[[${past9quakeTime}]] /<strong>発生地点:</strong>[[${past9quakePointName}]] /<strong>最大震度:</strong>[[${past9maxScale}]] /<strong>マグニチュード:</strong>[[${past9magnitude}]]</li>
+                    <li><strong>時間:</strong>[[${past10quakeTime}]] /<strong>発生地点:</strong>[[${past10quakePointName}]] /<strong>最大震度:</strong>[[${past10maxScale}]] /<strong>マグニチュード:</strong>[[${past10magnitude}]]</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/0.0.11/push.min.js"></script>
+<script>
+    //var sock = new WebSocket('wss://api-realtime-sandbox.p2pquake.net/v2/ws');
+
+    function tsunami(warning){
+        switch(warning){
+            case "Warning":
+              return warning = "警報が発表されている地域があります"
+            break;
+            case "Unknown":
+              return warning = "不明"
+            break;
+            case "None":
+              return warning = "なし"
+            break;
+            case "Checking":
+              return warning = "調査中"
+            break;  
+            case "NonEffective":
+              return warning = "若干の海面変動"     
+            break; 
+            default:
+              return warning = "情報のフォーマットに失敗。"
+            break;
+        }
+    }
+    function shindo(sindo){
+        switch(sindo){
+            case 10:
+            return sindo = "1"
+            break;
+            case 20:
+            return sindo = "2"
+            break;
+            case 30:
+            return sindo = "3"
+            break;
+            case 40:
+            return sindo = "4"
+            break;
+            case 45:
+            return sindo = "5弱"
+            break;
+            case 50 :
+            return sindo = "5強"
+            break;
+            case 55 :
+            return sindo = "6弱"
+            break;
+            case 60:
+            return sindo = "6強"
+            break;
+            case 70:
+            return sindo = "7"
+            break;
+            case -1:
+            return sindo = "[不明]"
+            break;
+          }
+    }
+
+// 接続
+
+
+function pushcomferm(){
+    if(confirm("通知を有効にしますか？")){
+        push()
+        var sock = new WebSocket('wss://api-realtime-sandbox.p2pquake.net/v2/ws');
+        console.log("通知を許可")
+        sock.addEventListener('open',function(e){
+        console.log('Socket 接続成功');
+        });
+        // サーバーからデータを受け取る
+        sock.addEventListener('message',function(e){
+            const o = JSON.parse(e.data)  
+            console.log("Response P2P WebSocketServer. Code :"+o.code)
+
+            if(o.code === 551){
+                
+                let msindo = shindo(o.earthquake.maxScale)
+                let atime = o.earthquake.time
+                let domesticTsunami = o.earthquake.domesticTsunami
+                let depth = o.earthquake.hypocenter.depth
+                let magunitude = o.earthquake.hypocenter.magnitude
+                let hyposentername = o.earthquake.hypocenter.name
+                let pointskazu = o.points.length
+                let eq = ""
+                let info = ""
+                let tsunamiwarning = ""
+                Push.create("緊急地震速報", 
+                {
+                body: hyposentername+"で震度"+msindo+"の地震が発生しました",
+                // icon: 'casley_logo.png',
+                timeout: 8000,
+                onClick: function () {
+                    window.focus(); 
+                    this.close();
+                }
+                })
+            }
+        });
+    }
+}
+
+
+
+function push(){
+  Push.create("更新情報", 
+   {
+    body: "地震発生時に通知します",
+    // icon: 'casley_logo.png',
+    timeout: 8000,
+    onClick: function () {
+    window.focus(); 
+    this.close();
+    }
+  })
+}
+pushcomferm()
+</script>
+</html>

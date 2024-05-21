@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+header {
+    background-color: red;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+.current-earthquake, .past-earthquakes {
+    margin-bottom: 20px;
+}
+
+.current-earthquake h2, .past-earthquakes h2 {
+    margin-top: 0;
+}
+
+.earthquake-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.current-earthquake .earthquake-info {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    width: 45%;
+}
+
+.current-earthquake .earthquake-info p {
+    margin: 5px 0;
+}
+
+.earthquake-map {
+    width: 50%;
+}
+
+.scroll-frame {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background-color: white;
+    padding: 10px;
+}
+
+.scroll-frame ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.scroll-frame li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.scroll-frame li:last-child {
+    border-bottom: none;
+}
