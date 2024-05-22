@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class EarthquakeDataService {
 
     private final RestTemplate restTemplate;
-    private final String API_URL = "https://api.p2pquake.net/v2/history?codes=551&limit=10";
+    private final String API_URL = "https://api.p2pquake.net/v2/history?codes=551&limit=11";
     @Autowired
     public EarthquakeDataService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -24,7 +24,6 @@ public class EarthquakeDataService {
         //for (EarthquakeData earthquake : earthquakes) {
         	EarthquakeInfoData earthquakeInfoData = earthquakes[0].getEarthquake();
         	HypocenterInfoData hypocenterInfoData = earthquakeInfoData.getHypocenter();
-            System.out.println("地震ID: " + earthquakes[0].getId()+"\n地震地点:"+hypocenterInfoData.getName());
             // 他の情報も表示する
         //}
         return earthquakes[0];
@@ -39,7 +38,6 @@ public class EarthquakeDataService {
         //for (EarthquakeData earthquake : earthquakes) {
         	EarthquakeInfoData earthquakeInfoData = earthquakes[0].getEarthquake();
         	HypocenterInfoData hypocenterInfoData = earthquakeInfoData.getHypocenter();
-            System.out.println("地震ID: " + earthquakes[0].getId()+"\n地震地点:"+hypocenterInfoData.getName());
             // 他の情報も表示する
         //}
         return earthquakes;

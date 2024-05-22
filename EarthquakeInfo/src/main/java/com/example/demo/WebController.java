@@ -13,27 +13,36 @@ public class WebController {
 		int i = 0;
 		RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
 		EarthquakeDataService FDFAPI = new EarthquakeDataService(restTemplateBuilder);
-		EarthquakeData EQData = FDFAPI.fetchSingleDataFromAPI();
-		
-		EarthquakeInfoData earthquakeInfoData = EQData.getEarthquake();
-    	HypocenterInfoData hypocenterInfoData = earthquakeInfoData.getHypocenter();
-        System.out.println("地震ID: " + EQData.getId()+"\n地震地点:"+hypocenterInfoData.getName());
-		model.addAttribute("quakeTime",EQData.getTime());
-		model.addAttribute("quakePointName",hypocenterInfoData.getName());
-		model.addAttribute("maxScale",earthquakeInfoData.getMaxScale()/10);
-		model.addAttribute("magnitude",hypocenterInfoData.getMagnitude());
-		model.addAttribute("quakePointDepth",hypocenterInfoData.getDepth());
-		model.addAttribute("tsunami",earthquakeInfoData.getDomesticTsunami());
-		model.addAttribute("mapURL","http://maps.google.co.jp/maps?ll="+hypocenterInfoData.getLatitude()+", "+hypocenterInfoData.getLongitude()+"&q="+hypocenterInfoData.getLatitude()+", "+hypocenterInfoData.getLongitude()+"&output=embed&t=m&z=8");
+//		EarthquakeData EQData = FDFAPI.fetchSingleDataFromAPI();
+//		
+		EarthquakeInfoData earthquakeInfoData; //= EQData.getEarthquake();
+    	HypocenterInfoData hypocenterInfoData; //= earthquakeInfoData.getHypocenter();
+//        System.out.println("地震ID: " + EQData.getId()+"\n地震地点:"+hypocenterInfoData.getName());
+//		model.addAttribute("quakeTime",EQData.getTime());
+//		model.addAttribute("quakePointName",hypocenterInfoData.getName());
+//		model.addAttribute("maxScale",Convert.shindo(earthquakeInfoData.getMaxScale()));
+//		model.addAttribute("magnitude",Convert.magnitude(hypocenterInfoData.getMagnitude()));
+//		model.addAttribute("quakePointDepth",hypocenterInfoData.getDepth());
+//		model.addAttribute("tsunami",Convert.tsunami(earthquakeInfoData.getDomesticTsunami()));
+//		model.addAttribute("mapURL","http://maps.google.co.jp/maps?ll="+hypocenterInfoData.getLatitude()+", "+hypocenterInfoData.getLongitude()+"&q="+hypocenterInfoData.getLatitude()+", "+hypocenterInfoData.getLongitude()+"&output=embed&t=m&z=8");
 		for (EarthquakeData earthquake : FDFAPI.fetchMultiDataFromAPI()) {
 			i++;
-			if (i>=2) {
+			if (true) {
 				earthquakeInfoData = earthquake.getEarthquake();
 	    		hypocenterInfoData = earthquakeInfoData.getHypocenter();
+	    		if(i==1) {
+	    			model.addAttribute("quakeTime",earthquake.getTime());
+	    			model.addAttribute("quakePointName",hypocenterInfoData.getName());
+	    			model.addAttribute("maxScale",Convert.shindo(earthquakeInfoData.getMaxScale()));
+	    			model.addAttribute("magnitude",Convert.magnitude(hypocenterInfoData.getMagnitude()));
+	    			model.addAttribute("quakePointDepth",hypocenterInfoData.getDepth());
+	    			model.addAttribute("tsunami",Convert.tsunami(earthquakeInfoData.getDomesticTsunami()));
+	    			model.addAttribute("mapURL","http://maps.google.co.jp/maps?ll="+hypocenterInfoData.getLatitude()+", "+hypocenterInfoData.getLongitude()+"&q="+hypocenterInfoData.getLatitude()+", "+hypocenterInfoData.getLongitude()+"&output=embed&t=m&z=8");
+	    		}
 	    		model.addAttribute("past"+i+"quakeTime",earthquakeInfoData.getTime());
 	    		model.addAttribute("past"+i+"quakePointName",hypocenterInfoData.getName());
-	    		model.addAttribute("past"+i+"maxScale",earthquakeInfoData.getMaxScale()/10);
-	    		model.addAttribute("past"+i+"magnitude",hypocenterInfoData.getMagnitude());
+	    		model.addAttribute("past"+i+"maxScale",Convert.shindo(earthquakeInfoData.getMaxScale()));
+	    		model.addAttribute("past"+i+"magnitude",Convert.magnitude(hypocenterInfoData.getMagnitude()));
 			}
     		
         // 他の情報も表示する

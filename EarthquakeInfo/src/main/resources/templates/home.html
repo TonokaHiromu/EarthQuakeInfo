@@ -15,7 +15,7 @@
             <h2>直近の地震情報</h2>
             <div class="earthquake-container">
                 <div class="earthquake-info">
-                    <p><strong>発生時刻:</strong> [[${quakeTime}]]</p>
+                    <p><strong>発表時刻:</strong> [[${quakeTime}]]</p>
                     <p><strong>発生地点:</strong>[[${quakePointName}]]</p>
                     <p><strong>最大震度:</strong> [[${maxScale}]]</p>
                     <p><strong>マグニチュード:</strong> [[${magnitude}]]</p>
@@ -35,7 +35,7 @@
             </div>
         </section>
         <section class="past-earthquakes">
-            <h2>過去の地震情報</h2>
+            <h2>過去10件の地震情報</h2>
             <div class="scroll-frame">
                 <ul>
                     <li><strong>時間:</strong>[[${past2quakeTime}]] /<strong>発生地点:</strong>[[${past2quakePointName}]] /<strong>最大震度:</strong>[[${past2maxScale}]] /<strong>マグニチュード:</strong>[[${past2magnitude}]]</li>
@@ -54,72 +54,18 @@
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/0.0.11/push.min.js"></script>
 <script>
-    //var sock = new WebSocket('wss://api-realtime-sandbox.p2pquake.net/v2/ws');
 
-    function tsunami(warning){
-        switch(warning){
-            case "Warning":
-              return warning = "警報が発表されている地域があります"
-            break;
-            case "Unknown":
-              return warning = "不明"
-            break;
-            case "None":
-              return warning = "なし"
-            break;
-            case "Checking":
-              return warning = "調査中"
-            break;  
-            case "NonEffective":
-              return warning = "若干の海面変動"     
-            break; 
-            default:
-              return warning = "情報のフォーマットに失敗。"
-            break;
-        }
-    }
-    function shindo(sindo){
-        switch(sindo){
-            case 10:
-            return sindo = "1"
-            break;
-            case 20:
-            return sindo = "2"
-            break;
-            case 30:
-            return sindo = "3"
-            break;
-            case 40:
-            return sindo = "4"
-            break;
-            case 45:
-            return sindo = "5弱"
-            break;
-            case 50 :
-            return sindo = "5強"
-            break;
-            case 55 :
-            return sindo = "6弱"
-            break;
-            case 60:
-            return sindo = "6強"
-            break;
-            case 70:
-            return sindo = "7"
-            break;
-            case -1:
-            return sindo = "[不明]"
-            break;
-          }
-    }
+//デバッグ用
+// new WebSocket('wss://api-realtime-sandbox.p2pquake.net/v2/ws')
 
 // 接続
 
 
 function pushcomferm(){
-    if(confirm("通知を有効にしますか？")){
+    if(confirm("地震が発生した際に情報を通知しますか？")){
         push()
-        var sock = new WebSocket('wss://api-realtime-sandbox.p2pquake.net/v2/ws');
+         //var sock = new WebSocket('wss://api-realtime-sandbox.p2pquake.net/v2/ws');
+         var sock = new WebSocket('wss://api.p2pquake.net/v2/ws');
         console.log("通知を許可")
         sock.addEventListener('open',function(e){
         console.log('Socket 接続成功');
@@ -149,6 +95,7 @@ function pushcomferm(){
                 onClick: function () {
                     window.focus(); 
                     this.close();
+                    window.location.reload(true);
                 }
                 })
             }
